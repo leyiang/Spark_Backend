@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post("/image/fetch", [\App\Http\Controllers\ImageController::class, "fetch"]);
-Route::resource("image", "ImageController");
+Route::resource("image", \App\Http\Controllers\ImageController::class);

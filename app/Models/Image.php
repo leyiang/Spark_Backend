@@ -16,25 +16,30 @@ class Image extends Model {
         IMAGETYPE_PNG => "png",
     ];
 
-    public static function fetch( $uri ) {
-        // Store image as tmp file
-        $tmp = storage_path( "images/" . time() . ".tmp" );
-        file_put_contents( $tmp, file_get_contents($uri) );
+    public static function getType( $file ) {
+        $type = exif_imagetype( $file );
 
-        // Get File Type and MD5
-        $type = exif_imagetype( $tmp );
         if( ! isset( self::$TypeTable[ $type ] ) ) {
             throw ValidationException::withMessages([
                 "image" => "type invalid"
             ]);
         }
 
-        $md5  = md5_file( $tmp );
-        $type = self::$TypeTable[ $type ];
+        return self::$TypeTable[ $type ];
+    }
 
-        // Save File
+    public static function fetch( $uri ) {
+        // Store image as tmp file
+        $tmp = storage_path( "tmp/" . time() . ".tmp" );
+        file_put_contents( $tmp, file_get_contents($uri) );
+
+        // Get File Type and MD5
+        $md5  = md5_file( $tmp );
+        $type = self::getType( $tmp );
+
+        // Set correct extension
         $filename = $md5 . "." . $type;
-        File::move( $tmp, public_path("images/" . $filename) );
+        File::move( $tmp, storage_path("tmp/" . $filename) );
 
         return $filename;
     }
