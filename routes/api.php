@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post("/image/fetch", [\App\Http\Controllers\ImageController::class, "fetch"]);
+Route::post("/image/upload", [\App\Http\Controllers\ImageController::class, "upload"]);
 Route::resource("image", \App\Http\Controllers\ImageController::class);

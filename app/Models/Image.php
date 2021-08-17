@@ -30,29 +30,9 @@ class Image extends Model {
         return self::$TypeTable[ $type ];
     }
 
-    public static function fetch( $uri ) {
-        // Store image as tmp file
-        $tmp = public_path( "tmp" . DIRECTORY_SEPARATOR . time() . ".tmp" );
-        file_put_contents( $tmp, file_get_contents($uri) );
-
-        // Get File Type and MD5
-        $md5  = md5_file( $tmp );
-        $type = self::getType( $tmp );
-
-        // Set correct extension
-        $filename = $md5 . "." . $type;
-        File::move( $tmp, public_path("tmp" . DIRECTORY_SEPARATOR . $filename) );
-
-        return [ $filename, $type ];
-    }
-
-    public function exists() {
-        return file_exists( $this->path(true) );
-    }
-
     public function path( $filesystem = false ) {
-        $folder = $this->published ? DIRECTORY_SEPARATOR . "images" : DIRECTORY_SEPARATOR . "tmp";
-        $file = $folder . DIRECTORY_SEPARATOR . $this->file;
+        $folder = $this->published ? "images" : "tmp";
+        $file = $folder . "/" . $this->file;
 
         if( $filesystem ) {
             return public_path( $file );
@@ -61,9 +41,6 @@ class Image extends Model {
         return url( $file );
     }
 
-//    public function getFile() {
-//        return
-//    }
     public function crop( $info ) {
         $image = imagecreatefromjpeg( $this->path(true ) );
         $result = imagecrop( $image, $info );

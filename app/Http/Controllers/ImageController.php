@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Helper\Helper;
+use App\Helper\Uploader;
 use App\Models\Image;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ImageController extends Controller
 {
 
     public function index() {
-        $images = Image::all();
+        $images = Image::where("published", true)->get();
+
         return Helper::success([
             "images" => $images
         ]);
@@ -19,9 +22,9 @@ class ImageController extends Controller
 
     public function store(Request $request) {
         $info = request()->validate([
-            "image" => "required|exists:images,id,published,0",
             "crop" => "required",
             "tags" => "required|array",
+            "image" => "required|exists:images,id",
         ]);
 
         $image = Image::find( $info["image"] );
@@ -50,12 +53,18 @@ class ImageController extends Controller
     public function destroy(Image $image) {
     }
 
-    public function fetch() {
-        $info = request()->validate([
-            "path" => "required"
+    public function upload() {
+        $detail = request()->validate([
+            "file" => "required|file|image"
         ]);
 
-        [$filename, $type ] = Image::fetch( $info["path"] );
+        $file = $detail["file"];
+
+        $md5  = md5_file( $file->getRealPath() );
+        $type = Image::getType( $file );
+        $filename = $md5 . "." . $type;
+
+        $file->move( public_path("tmp"), $filename );
 
         $image = Image::create([
             "file" => $filename,
