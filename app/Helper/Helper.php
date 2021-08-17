@@ -15,4 +15,23 @@ class Helper {
         return response()->json( $info, 200 );
     }
 
+    public static function order( $keys, $from ) {
+        $result = [];
+
+        foreach ( $keys as $key ) {
+            $result[ $key ] = $from[ $key ];
+        }
+
+        return $result;
+    }
+
+    public static function orderAll( $keys, $from_list ) {
+        $result = [];
+
+        foreach ( $from_list as $from ) {
+            $result[] = Helper::order( $keys, $from );
+        }
+
+        return $result;
+    }
 }

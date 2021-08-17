@@ -32,7 +32,7 @@ class Image extends Model {
 
     public function path( $filesystem = false ) {
         $folder = $this->published ? "images" : "tmp";
-        $file = $folder . "/" . $this->file;
+        $file = $folder . DIRECTORY_SEPARATOR . $this->file;
 
         if( $filesystem ) {
             return public_path( $file );
@@ -42,13 +42,18 @@ class Image extends Model {
     }
 
     public function crop( $info ) {
-        $image = imagecreatefromjpeg( $this->path(true ) );
+        $type = $this->type;
+        $image = call_user_func("imagecreatefrom". $type, $this->path(true) );
         $result = imagecrop( $image, $info );
 
         if( $result === FALSE ) throw new \Exception();
 
-        imagejpeg( $result, "test.png" );
+        call_user_func("image" . $type, $result, public_path("/images/" . $this->file ) );
         imagedestroy( $result );
         imagedestroy( $image );
+    }
+
+    public function getPathAttribute() {
+        return $this->path();
     }
 }

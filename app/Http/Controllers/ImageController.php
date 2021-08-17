@@ -16,7 +16,7 @@ class ImageController extends Controller
         $images = Image::where("published", true)->get();
 
         return Helper::success([
-            "images" => $images
+            "images" => Helper::orderAll( ["id", "file", "path"], $images)
         ]);
     }
 
@@ -51,6 +51,8 @@ class ImageController extends Controller
     }
 
     public function destroy(Image $image) {
+        $image->delete();
+        return Helper::success();
     }
 
     public function upload() {
