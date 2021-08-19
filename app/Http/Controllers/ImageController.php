@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Helper\Uploader;
 use App\Models\Image;
+use App\Models\Tag;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +17,7 @@ class ImageController extends Controller
         $images = Image::where("published", true)->get();
 
         return Helper::success([
-            "images" => Helper::orderAll( ["id", "file", "path"], $images)
+            "images" => Helper::orderAll( ["id", "file", "path", "tags"], $images)
         ]);
     }
 
@@ -36,6 +37,14 @@ class ImageController extends Controller
         $image->crop( $info["crop"] );
 
         // TAG LOGIC
+        $tag_list = [];
+        foreach ( $info["tags"] as $content ) {
+            $tag = Tag::firstOrCreate(["content" => $content]);
+            $tag_list[] = $tag->id;
+        }
+
+        $image->tags()->sync( $tag_list );
+
 
         $image->update([
             "published" => true

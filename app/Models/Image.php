@@ -56,4 +56,8 @@ class Image extends Model {
     public function getPathAttribute() {
         return $this->path();
     }
+
+    public function tags() {
+        return $this->belongsToMany( Tag::class, "image_tags" );
+    }
 }
