@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Create Image
+ */
 Route::post("/image/fetch", [\App\Http\Controllers\ImageController::class, "fetch"]);
 Route::post("/image/upload", [\App\Http\Controllers\ImageController::class, "upload"]);
 Route::resource("image", \App\Http\Controllers\ImageController::class);
+
+
+/**
+ * Create Spark
+ */
+Route::resource("spark", \App\Http\Controllers\SparkController::class);
