@@ -42,21 +42,27 @@ class Image {
         $result = md5_file( $path );
         // Remove File
         unlink( $path );
+        // return
         return $result;
     }
 
     public static function crop( $path, $size, $type ) {
+        // get file
         $image   = Image::getImageByPath( $path, $type );
+
+        // crop
         $cropped = imagecrop( $image, $size );
 
         if( ! $cropped ) throw new \Exception();
 
+        // get cropped filename
         $md5 = Image::getImageMD5($cropped, $type);
         $filename = Image::getFileName( $md5, $type );
 
         // Save Image
         Image::saveImageByPath( $cropped, Image::path( $filename, Image::PATH_FILESYSTEM ), $type );
 
+        // Destroy tmp files
         imagedestroy( $image );
         imagedestroy( $cropped );
 
@@ -65,7 +71,8 @@ class Image {
 
     public static function path( $filename, $type=self::PATH_URL ) {
         $folder = "images";
-        $path = $folder . DIRECTORY_SEPARATOR . $filename;
+        $separator = $type === self::PATH_URL ? "/" : DIRECTORY_SEPARATOR;
+        $path = $folder . $separator . $filename;
 
         switch ( $type ) {
             case self::PATH_URL:
@@ -92,9 +99,9 @@ class Image {
         $filename = Image::getFileName( $md5, $type );
 
         // Save
-        $image->move( public_path("tmp"), $filename );
+        $image->move( public_path("images"), $filename );
 
         // Return
-        return self::path( $image );
+        return [$type, $filename];
     }
 }

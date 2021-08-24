@@ -15,6 +15,13 @@ class CreateSparksTable extends Migration
     {
         Schema::create('sparks', function (Blueprint $table) {
             $table->id();
+
+            $table->string("file");
+            $table->string("type");
+            $table->string("description")->nullable();
+            $table->string("link")->nullable();
+            $table->boolean("published")->default(false);
+
             $table->timestamps();
         });
     }

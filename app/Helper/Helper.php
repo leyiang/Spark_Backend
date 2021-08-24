@@ -15,7 +15,7 @@ class Helper {
         return response()->json( $info, 200 );
     }
 
-    public static function order( $keys, $from ) {
+    public static function order( $from, $keys ) {
         $result = [];
 
         foreach ( $keys as $key ) {
@@ -25,7 +25,7 @@ class Helper {
         return $result;
     }
 
-    public static function orderAll( $keys, $from_list ) {
+    public static function orderAll( $from_list, $keys ) {
         $result = [];
 
         foreach ( $from_list as $from ) {

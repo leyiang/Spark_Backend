@@ -25,18 +25,23 @@ class SparkController extends Controller
         ]);
 
         // Upload Image
-        $path = Image::upload( $info["image"] );
+        [$type, $filename] = Image::upload( $info["image"] );
 
         // Create Spark
-        $spark = Spark::create([ "path" => $path ]);
+        $spark = Spark::create([
+            "type" => $type,
+            "file" => $filename
+        ]);
 
-        return Helper::success(
-            Helper::order( $spark, ["id", "src"] )
-        );
+        return Helper::success([
+            "id" => $spark->id
+        ]);
     }
 
     public function show(Spark $spark) {
-
+        return Helper::success(
+            Helper::order( $spark, ["id", "src"] )
+        );
     }
 
     public function update(Request $request, Spark $spark) {

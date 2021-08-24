@@ -9,18 +9,27 @@ use Illuminate\Database\Eloquent\Model;
 class Spark extends Model {
     use HasFactory;
 
-    // Get Src
+    protected $guarded = [];
+
+    // Mutators
     public function getSrcAttribute() {
         return Image::path( $this->attributes["file"], Image::PATH_URL );
     }
 
-    public function updateTags() {
+    // Relations
+    public function tags() {
+        return $this->belongsToMany( Tag::class );
+    }
+
+    // helpers
+    public function updateTags( $tags ) {
         $tag_list = [];
-        foreach ( $info["tags"] as $content ) {
-            $tag = Tag::firstOrCreate(["content" => $content]);
+
+        foreach ( $tags as $content ) {
+            $tag = Tag::firstOrCreate([ "content" => $content ]);
             $tag_list[] = $tag->id;
         }
 
-        $spark->tags()->sync( $tag_list );
+        $this->tags()->sync( $tag_list );
     }
 }
