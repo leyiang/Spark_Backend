@@ -16,6 +16,10 @@ class Spark extends Model {
         return Image::path( $this->attributes["file"], Image::PATH_URL );
     }
 
+    public function getTagsAttribute() {
+        return $this->tags()->pluck("content");
+    }
+
     // Relations
     public function tags() {
         return $this->belongsToMany( Tag::class, "spark_tags");

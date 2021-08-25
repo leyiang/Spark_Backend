@@ -19,7 +19,13 @@ class Helper {
         $result = [];
 
         foreach ( $keys as $key ) {
-            $result[ $key ] = $from[ $key ];
+            if( strpos($key, ":") !== false ) {
+                [$new_from, $new_keys_raw] = explode(":", $key );
+                $new_keys = explode(",", $new_keys_raw);
+                $result[ $new_from ] = Helper::orderAll( $from[ $new_from ], $new_keys );
+            } else {
+                $result[ $key ] = $from[ $key ];
+            }
         }
 
         return $result;
@@ -29,7 +35,7 @@ class Helper {
         $result = [];
 
         foreach ( $from_list as $from ) {
-            $result[] = Helper::order( $keys, $from );
+            $result[] = Helper::order( $from, $keys );
         }
 
         return $result;

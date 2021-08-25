@@ -13,7 +13,7 @@ class SparkController extends Controller
         $sparks = Spark::all();
 
         return Helper::success(
-            Helper::orderAll( $sparks, ["id", "file", "path", "tags"] )
+            Helper::orderAll( $sparks, ["id", "src", "tags"] )
         );
     }
 
@@ -40,7 +40,7 @@ class SparkController extends Controller
 
     public function show(Spark $spark) {
         return Helper::success(
-            Helper::order( $spark, ["id", "src"] )
+            Helper::order( $spark, ["id", "src", "link", "tags"] )
         );
     }
 
@@ -48,6 +48,10 @@ class SparkController extends Controller
         $info = request()->validate([
             "crop" => "required",
             "tags" => "required|array",
+        ]);
+
+        $properties = request()->validate([
+            "link" => "required",
         ]);
 
         // CROP
@@ -59,6 +63,9 @@ class SparkController extends Controller
 
         // Tag
         $spark->updateTags( $info["tags"] );
+
+        // Update Properties
+        $spark->update( $properties );
 
         return Helper::success();
     }
