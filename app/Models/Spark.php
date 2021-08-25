@@ -18,7 +18,7 @@ class Spark extends Model {
 
     // Relations
     public function tags() {
-        return $this->belongsToMany( Tag::class );
+        return $this->belongsToMany( Tag::class, "spark_tags");
     }
 
     // helpers

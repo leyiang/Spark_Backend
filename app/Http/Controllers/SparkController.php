@@ -53,7 +53,8 @@ class SparkController extends Controller
         // CROP
         $path = Image::crop(
             Image::path( $spark->file, Image::PATH_FILESYSTEM ),
-            $info["crop"]
+            $info["crop"],
+            $spark->type
         );
 
         // Tag
