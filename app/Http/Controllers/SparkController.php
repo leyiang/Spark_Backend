@@ -13,7 +13,7 @@ class SparkController extends Controller
         $sparks = Spark::all();
 
         return Helper::success(
-            Helper::orderAll( $sparks, ["id", "src", "tags"] )
+            Helper::orderAll( $sparks, ["id", "link", "src", "tags"] )
         );
     }
 
@@ -55,10 +55,9 @@ class SparkController extends Controller
         ]);
 
         // CROP
-        $path = Image::crop(
+        $properties["file"] = Image::crop(
             Image::path( $spark->file, Image::PATH_FILESYSTEM ),
-            $info["crop"],
-            $spark->type
+            $info["crop"], $spark->type
         );
 
         // Tag
